@@ -17,6 +17,10 @@
         "atlas"
     ],
     "author": "Corporate Anon <corporateanon@gmail.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/corporateanon/lerna-atlas"
+    },
     "license": "WTFPL",
     "dependencies": {
         "escape-string-regexp": "^1.0.5",
