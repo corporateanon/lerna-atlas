@@ -6,6 +6,8 @@ const { join } = require('path');
 const mustache = require('mustache');
 const escape = require('escape-string-regexp');
 
+const yargs = require('yargs');
+
 const START = '<!--- LERNA_PACKAGES --->';
 const END = '<!--- /LERNA_PACKAGES --->';
 const CONTENT = '[\\s\\S]*';
@@ -16,8 +18,8 @@ const loadTemplate = async () => {
     return b.toString('utf8');
 };
 
-const loadDoc = async () => {
-    const b = await read('README.md');
+const loadDoc = async source => {
+    const b = await read(source);
     return b.toString('utf8');
 };
 
@@ -31,7 +33,7 @@ const replaceInDoc = (docContents, text) => {
     });
 };
 
-const saveDoc = async text => {
+const saveDoc = async (dest, text) => {
     return write('README.md', text);
 };
 
@@ -45,19 +47,31 @@ const listPackages = async () => {
 };
 
 const main = async () => {
+    const { source, dest } = yargs
+        .alias('s', 'source')
+        //Source
+        .describe('s', 'Source file')
+        .default('s', 'README.md')
+        //Dest
+        .alias('d', 'dest')
+        .describe('d', 'Destination file')
+        .default('d', 'README.md').argv;
+
+    console.warn(`Patching ${source} to ${dest}`);
+
     const packages = await listPackages();
     const template = await loadTemplate();
     const text = mustache.render(template, { packages });
-    const docContents = await loadDoc();
+    const docContents = await loadDoc(source);
     const newText = replaceInDoc(docContents, text);
-    await saveDoc(newText);
+    await saveDoc(dest, newText);
 };
 
 main()
     .then(_ => {
-        console.error('Ok');
+        console.warn('Ok');
     })
     .catch(e => {
-        console.error('Error');
-        console.error(e.stack);
+        console.warn('Error');
+        console.warn(e.stack);
     });
