@@ -1,0 +1,16 @@
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Version</th>
+        <th>Description</th>
+    </tr>
+
+    {{#packages}}
+        <tr>
+            <th>{{name}}</th>
+            <th>{{version}}</th>
+            <th>{{description}}</th>
+        </tr>
+    {{/packages}}
+</table>
+<small>Powered by: <a href="https://www.npmjs.com/package/lerna-atlas">lerna-atlas</a></small>
